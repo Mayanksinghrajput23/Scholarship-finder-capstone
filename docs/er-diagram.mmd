@@ -1,0 +1,61 @@
+erDiagram
+    USER ||--o| PROFILE : "has one"
+    USER ||--o{ APPLICATION : "creates"
+    SCHOLARSHIP ||--o{ APPLICATION : "receives"
+    USER ||--o{ SCHOLARSHIP : "created by (admin)"
+    USER ||--o{ NOTIFICATION : "receives"
+
+    USER {
+        ObjectId _id PK
+        string name
+        string email UK
+        string password "bcrypt hash"
+        string role "student | admin"
+        boolean isActive
+        string refreshTokenHash "SHA-256"
+        string resetTokenHash "SHA-256, 15 min"
+    }
+    PROFILE {
+        ObjectId _id PK
+        ObjectId user FK "unique"
+        string category
+        number income
+        string course
+        string state
+        number marks
+    }
+    SCHOLARSHIP {
+        ObjectId _id PK
+        string title
+        string provider
+        string type "merit | welfare"
+        number amount
+        string[] categories "empty = any"
+        number maxIncome "null = no limit"
+        string[] courses "empty = any"
+        string[] states "empty = any"
+        number minMarks
+        string[] prerequisites
+        string applyLink
+        date lastDate
+        boolean isActive
+        ObjectId createdBy FK
+    }
+    APPLICATION {
+        ObjectId _id PK
+        ObjectId user FK
+        ObjectId scholarship FK
+        string status "bookmarked ... paid | rejected"
+        string notes
+        object[] history
+        object[] checklist "documents"
+        boolean reminderSent
+    }
+    NOTIFICATION {
+        ObjectId _id PK
+        ObjectId user FK
+        string type "scholarship | status | reminder | admin"
+        string message
+        string link
+        boolean read
+    }
